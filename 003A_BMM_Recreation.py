@@ -1,4 +1,4 @@
-"""Hearts, by Jared Glenn"""
+"""Hearts"""
 
 heart = """
 ................................................................
@@ -17,9 +17,10 @@ heart = """
                         *************
                           *********
                             *****
-                             ***                               """
+                             ***
+................................................................."""
 
-print("Hearts, by Jared Glenn")
+print("Hearts")
 message = input("Please enter a word or phrase:")
 
 if message == '':
