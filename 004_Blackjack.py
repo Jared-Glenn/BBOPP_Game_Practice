@@ -109,4 +109,88 @@ def main():
                     money += bet
                 elif (playerValue > 21) or (playerValue < dealerValue):
                     print('You lost!')
+                    money -= bet
+                elif playerValue > dealerValue:
+                    print(f'You won ${bet}!')
+                    money += bet
+                elif playerValue == dealerValue:
+                    print('It\'s a tie! Your bet has been returned to you.')
                     
+                input('Press Enter to continue...')
+                print('\n\n')
+                
+                
+def getBet(maxBet)
+    """Ask the player how much they want to bet for this round."""
+    while True: # Keep asking until they enter a valid amount.
+        print(f'How much do you bet? (1-{maxBet}, or QUIT)')
+        bet = input('> ').upper().strip()
+        if bet == 'QUIT':
+            print('Thanks for playing!')
+            sys.exit()
+            
+        if not bet.isdecimal():
+            continue # If the player didn't enter a number, ask again.
+        
+        bet = int(bet)
+        if 1 <= bet <= maxBet:
+            return bet # Player entered a valid bet.
+        
+        
+def getDeck():
+    """Return a list of (rank, suit) tuples for all 52 cards."""
+    deck = []
+    for suit in (HEARTS, DIAMONDS, SPADES, CLUBS):
+        for rank in range(2, 11):
+            deck.append((str(rank), suit)) # Add the numbered cards.
+        for rank in ('J', 'Q', 'K', 'A'):
+            deck.append((rank, suit)) # Add the face and ace cards.
+        random.shuffle(deck)
+        return deck
+    
+
+def displayHands(playerHand, dealerHand, showDealerHand):
+    """Show the player's and dealer's cards. Hide the dealer's first
+    card if showDealerHand is False."""
+    print()
+    if showDealerHand:
+        print('DEALER:', getHandValue(dealerHand))
+        displayCards(dealerHand)
+    else:
+        print('DEALER: ???')
+        # Hide the dealer's first card:
+        displayCards([BACKSIDE] + dealerHand[1:])
+        
+    # Show the player's cards:
+    print('PLAYER:', getHandValue(playerHand))
+    displayCards(playerHand)
+    
+    
+def getHandValue(cards):
+    """Returns the value of the cards. Face cards are worth 10, aces are
+    worth 11 or 1 (this function picks the most suitable ace value)."""
+    value = 0
+    numberOfAces = 0
+    
+    # Add the value for the non-ace cards:
+    for card in cards:
+        rank = card[0] # Card is a tuple like (rank, suit)
+        if rank == 'A':
+            numberOfAces += 1
+        elif rank in ('K', 'Q', 'J'): # Face cards are worth 10 points.
+            value += 10
+        else:
+            value += int(rank) # Numbered cards are worth their number.
+            
+        # Add the value for the aces:
+        value += numberOfAces # Add 1 per ace.
+        for i in range(numberOfAces):
+            # If another 10 can be added with busting, do so:
+            if value + 10 <= 21:
+                value += 10
+                
+        return value
+    
+    
+    def displayCards(cards):
+        
