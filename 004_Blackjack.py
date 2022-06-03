@@ -120,7 +120,7 @@ def main():
                 print('\n\n')
                 
                 
-def getBet(maxBet)
+def getBet(maxBet):
     """Ask the player how much they want to bet for this round."""
     while True: # Keep asking until they enter a valid amount.
         print(f'How much do you bet? (1-{maxBet}, or QUIT)')
@@ -192,5 +192,50 @@ def getHandValue(cards):
         return value
     
     
-    def displayCards(cards):
+def displayCards(cards):
+    """Display all the cards in the cards list."""
+    rows = ['', '', '', '', ''] # The text to display on each row.
+    
+    for i, card in enumerate(cards):
+        row[0] += '__ ' # Print the top line of the card.
+        if card == BACKSIDE:
+            # Print a card's back:
+            rows[1] += '|## | '
+            rows[2] += '|###| '
+            rows[3] += '|_##| '
+        else:
+            # Print the card's front:
+            rank, suit = card # The card is a tuple data structure.
+            rows[1] += f'|{rank.ljust(2)} | '
+            rows[2] += f'| {suit} | '
+            rows[3] += f'|_{rank.rjust(2, "_")}| '
         
+    # Print each row on the screen:
+    for row in rows:
+        print(row)
+            
+            
+def getMove(playerHand, money):
+    """Asks the player for their move, and returns 'H' for hit, 'S' for
+    stand, and 'D' for double down."""                
+    while True: # Keep looping until the player enters a correct move.
+        # Determine what moves the player can make:
+        moves = ['(H)it', '(S)tand']
+        
+        # The player can double down on their first move, which can
+        # tell because they'll have exactly two cards:
+        if len(playerHand) == 2 and money > 0:
+            moves.append('(D)ouble down')
+            
+        # Get the player's move:
+        movePrompt = ', '.join(moves) + '> '
+        move = input(movePrompt).upper()
+        if move in ('H', 'S'):
+            return move # player has entered a valid move.
+        if move == 'D' and '(D)ouble down' in moves:
+            return move # Player has entered a valid move.
+        
+        
+# If the program is run (instead of imported), run the game:
+if __name__ == '__main__':
+    main()
