@@ -7,6 +7,8 @@ The classic card game also known as 21. (This version doesn't have splitting or 
 
 import random, sys
 
+from numpy import row_stack
+
 # Set up the constants:
 HEARTS = chr(9829) # Character 9829 is heart.
 DIAMONDS = chr(9830)
@@ -70,55 +72,55 @@ def main():
                 print(f'Bet increased to {bet}')
                 print('Bet:', bet)
                 
-                if move in ('H', 'D'):
-                    # Hit/doubleing down takes another card.
-                    newCard = deck.pop()
-                    rank, suit = newCard
-                    print(f'You drew a {rank} of {suit}.')
-                    playerHand.append(newCard)
-                    
-                    if getHandValue(playerHand) > 21:
-                        # The player has busted:
-                        continue
+            if move in ('H', 'D'):
+                # Hit/doubleing down takes another card.
+                newCard = deck.pop()
+                rank, suit = newCard
+                print(f'You drew a {rank} of {suit}.')
+                playerHand.append(newCard)
                 
-                if move in ('S', 'D'):
-                    # Stand/doubling down stops the player's turn.
-                    break
+                if getHandValue(playerHand) > 21:
+                    # The player has busted:
+                    continue
                 
-                # Handle the dealer's actions:
-                if getHandValue(playerHand) <= 21:
-                    while getHandValue(dealerHand) < 17:
-                        # The dealer hits:
-                        print('Dealer hits...')
-                        dealerHand.append(deck.pop())
-                        displayHands(playerHand, dealerHand, False)
-                        
-                        if getHandValue(dealerHand) > 21:
-                            break # The dealer has busted.
-                        input('Press Enter to continue...')
-                        print('\n\n')
-                            
-                # Show the final hands:
-                displayHands(playerHand, dealerHand, True)
+            if move in ('S', 'D'):
+                # Stand/doubling down stops the player's turn.
+                break
+            
+        # Handle the dealer's actions:
+        if getHandValue(playerHand) <= 21:
+            while getHandValue(dealerHand) < 17:
+                # The dealer hits:
+                print('Dealer hits...')
+                dealerHand.append(deck.pop())
+                displayHands(playerHand, dealerHand, False)
                 
-                playerValue = getHandValue(playerHand)
-                dealerValue = getHandValue(dealerHand)
-                # Handle whether the player won, lost, or tied:
-                if dealerValue > 21:
-                    print(f'Dealer busts! You win ${bet}!')
-                    money += bet
-                elif (playerValue > 21) or (playerValue < dealerValue):
-                    print('You lost!')
-                    money -= bet
-                elif playerValue > dealerValue:
-                    print(f'You won ${bet}!')
-                    money += bet
-                elif playerValue == dealerValue:
-                    print('It\'s a tie! Your bet has been returned to you.')
-                    
+                if getHandValue(dealerHand) > 21:
+                    break # The dealer has busted.
                 input('Press Enter to continue...')
                 print('\n\n')
-                
+                    
+        # Show the final hands:
+        displayHands(playerHand, dealerHand, True)
+        
+        playerValue = getHandValue(playerHand)
+        dealerValue = getHandValue(dealerHand)
+        # Handle whether the player won, lost, or tied:
+        if dealerValue > 21:
+            print(f'Dealer busts! You win ${bet}!')
+            money += bet
+        elif (playerValue > 21) or (playerValue < dealerValue):
+            print('You lost!')
+            money -= bet
+        elif playerValue > dealerValue:
+            print(f'You won ${bet}!')
+            money += bet
+        elif playerValue == dealerValue:
+            print('It\'s a tie! Your bet has been returned to you.')
+            
+        input('Press Enter to continue...')
+        print('\n\n')
+        
                 
 def getBet(maxBet):
     """Ask the player how much they want to bet for this round."""
@@ -182,14 +184,14 @@ def getHandValue(cards):
         else:
             value += int(rank) # Numbered cards are worth their number.
             
-        # Add the value for the aces:
-        value += numberOfAces # Add 1 per ace.
-        for i in range(numberOfAces):
-            # If another 10 can be added with busting, do so:
-            if value + 10 <= 21:
-                value += 10
-                
-        return value
+    # Add the value for the aces:
+    value += numberOfAces # Add 1 per ace.
+    for i in range(numberOfAces):
+        # If another 10 can be added with busting, do so:
+        if value + 10 <= 21:
+            value += 10
+            
+    return value
     
     
 def displayCards(cards):
@@ -197,7 +199,7 @@ def displayCards(cards):
     rows = ['', '', '', '', ''] # The text to display on each row.
     
     for i, card in enumerate(cards):
-        row[0] += '__ ' # Print the top line of the card.
+        rows[0] += ' ___  ' # Print the top line of the card.
         if card == BACKSIDE:
             # Print a card's back:
             rows[1] += '|## | '
